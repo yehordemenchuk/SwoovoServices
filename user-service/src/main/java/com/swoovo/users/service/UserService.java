@@ -9,7 +9,6 @@ import com.swoovo.users.repository.UserEntityRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -32,16 +31,11 @@ public class UserService {
             @CacheEvict(value = "users", allEntries = true),
             @CacheEvict(value = "user", allEntries = true)
     })
-    public UserResponse createUser(UserRequest userRequest) throws IOException, FileStorageException,
+    public UserResponse createUser(UserRequest userRequest) throws FileStorageException,
             EntityExistsException {
         if (checkUserExists(userRequest)) {
             throw new EntityExistsException("User with this data already exists: " + userRequest);
         }
-
-        minioService.uploadFile(userRequest.avatar().getName(),
-                userRequest.avatar().getInputStream(),
-                userRequest.avatar().getSize(),
-                userRequest.avatar().getContentType());
 
         UserEntity userEntity = userEntityRepository
                 .save(userMapper.fromRequest(userRequest));
@@ -55,7 +49,6 @@ public class UserService {
         return getUserResponse(findUserEntityById(id));
     }
 
-    @SneakyThrows
     @Transactional(readOnly = true)
     @Cacheable(value = "users")
     public Page<UserResponse> findAllUsers(Pageable pageable) {
@@ -99,7 +92,7 @@ public class UserService {
     private UserResponse getUserResponse(UserEntity userEntity) throws FileStorageException {
         UserResponse userResponse = userMapper.toResponse(userEntity);
 
-        userResponse.setAvatarUrl(minioService.downloadFile(userEntity.getAvatarFilePath()));
+        userResponse.setAvatarUrl();
 
         return userResponse;
     }

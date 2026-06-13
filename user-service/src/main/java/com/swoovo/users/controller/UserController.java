@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 
 @RestController
@@ -26,7 +27,7 @@ public class UserController {
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<UserResponse> registerUser(@Valid @ModelAttribute UserRequest userRequest) throws Exception {
+    public ResponseEntity<UserResponse> registerUser(@Valid @ModelAttribute UserRequest userRequest) throws IOException {
         UserResponse userResponse = userService.createUser(userRequest);
 
         URI location = ServletUriComponentsBuilder
