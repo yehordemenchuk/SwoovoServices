@@ -14,7 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.swoovo.support.util.MinioUtil;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +33,11 @@ public class PostService {
             @CacheEvict(value = "post", allEntries = true)
     })
     public PostResponse createPost(PostRequest postRequest) {
-        Post post = postJpaRepository.save(postMapper.fromRequest(postRequest, minioUtil));
+        Post post = postJpaRepository.save(postMapper.fromRequest(postRequest));
 
-        return postMapper.toResponse(post, minioUtil);
+        uploadMediaFiles(postRequest.media());
+
+        return getPostResponse(post);
     }
 
     @Transactional(readOnly = true)
@@ -41,18 +47,58 @@ public class PostService {
                 .orElseThrow(() ->
                         new EntityNotFoundException("Post not found with id: " + id));
 
-        return postMapper.toResponse(post, minioUtil);
+        return getPostResponse(post);
     }
 
     @Transactional(readOnly = true)
     public Page<PostResponse> findAll(Pageable pageable) {
         return postJpaRepository.findAll(pageable)
-                .map(post -> postMapper.toResponse(post, minioUtil));
+                .map(this::getPostResponse);
     }
 
     @Cacheable(key = "#userId", value = "posts")
     public Page<PostResponse> findByUserId(long userId, Pageable pageable) {
         return postJpaRepository.findPostsByUserId(userId, pageable)
-                .map(post -> postMapper.toResponse(post, minioUtil));
+                .map(this::getPostResponse);
+    }
+
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", allEntries = true),
+            @CacheEvict(value = "post", allEntries = true)
+    })
+    public void deletePostById(long id) {
+        if (!postJpaRepository.existsById(id)) {
+            throw new EntityNotFoundException("Post not found with id: " + id);
+        }
+
+        postJpaRepository.deleteById(id);
+    }
+
+    private PostResponse getPostResponse(Post post) {
+        PostResponse postResponse = postMapper.toResponse(post);
+
+        postResponse.setMediaUrls(downloadMediaUrls(post.getMediaFileNames()));
+
+        return postResponse;
+    }
+
+    private void uploadMediaFiles(List<MultipartFile> mediaFiles) throws RuntimeException {
+        try {
+            for (MultipartFile media : mediaFiles) {
+                minioUtil.uploadFile(media.getName(),
+                        media.getInputStream(),
+                        media.getSize(),
+                        media.getContentType());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<String> downloadMediaUrls(List<String> mediaFileNames) {
+        return mediaFileNames.stream()
+                .map(minioUtil::downloadFile)
+                .toList();
     }
 }

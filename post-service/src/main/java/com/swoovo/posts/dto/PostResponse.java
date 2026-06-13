@@ -1,15 +1,15 @@
 package com.swoovo.posts.dto;
 
-import java.util.ArrayList;
+import lombok.Data;
+
 import java.util.List;
 
-public record PostResponse(Long id,
-                           String name,
-                           String postText,
-                           List<String> mediaFileNames,
-                           Long userId,
-                           List<String> mediaUrls) {
-    public PostResponse {
-        mediaUrls = new ArrayList<>();
-    }
+@Data
+public final class PostResponse {
+    private final Long id;
+    private final String name;
+    private final String postText;
+    private final List<String> mediaFileNames;
+    private final Long userId;
+    private List<String> mediaUrls;
 }

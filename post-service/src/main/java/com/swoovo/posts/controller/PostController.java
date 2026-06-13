@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 
 @RestController
@@ -23,13 +22,13 @@ public class PostController {
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<PostResponse> createPost(@ModelAttribute PostRequest postRequest) throws IOException {
+    public ResponseEntity<PostResponse> createPost(@ModelAttribute PostRequest postRequest) {
         PostResponse postResponse = postService.createPost(postRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(postResponse.id())
+                .buildAndExpand(postResponse.getId())
                 .toUri();
 
         return ResponseEntity.created(location).body(postResponse);
@@ -48,5 +47,12 @@ public class PostController {
     @GetMapping("user/{userId}")
     public ResponseEntity<Page<PostResponse>> getPostsByUserId(@PathVariable Long userId, Pageable pageable) {
         return ResponseEntity.ok(postService.findByUserId(userId, pageable));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        postService.deletePostById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

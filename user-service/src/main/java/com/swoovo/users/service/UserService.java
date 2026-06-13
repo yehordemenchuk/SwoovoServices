@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.swoovo.support.util.MinioUtil;
 
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ import java.io.IOException;
 public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final UserMapper userMapper;
-    private final MinioService minioService;
+    private final MinioUtil minioUtil;
 
     @Transactional
     @Caching(evict = {
@@ -36,6 +37,8 @@ public class UserService {
         if (checkUserExists(userRequest)) {
             throw new EntityExistsException("User with this data already exists: " + userRequest);
         }
+
+        uploadUserAvatar(userRequest);
 
         UserEntity userEntity = userEntityRepository
                 .save(userMapper.fromRequest(userRequest));
@@ -92,7 +95,7 @@ public class UserService {
     private UserResponse getUserResponse(UserEntity userEntity) throws FileStorageException {
         UserResponse userResponse = userMapper.toResponse(userEntity);
 
-        userResponse.setAvatarUrl();
+        userResponse.setAvatarUrl(minioUtil.downloadFile(userEntity.getAvatarFilePath()));
 
         return userResponse;
     }
@@ -100,6 +103,17 @@ public class UserService {
     private UserEntity findUserEntityById(long id) throws EntityNotFoundException {
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> getUserNotFoundByIdException(id));
+    }
+
+    private void uploadUserAvatar(UserRequest userRequest) throws RuntimeException {
+        try {
+            minioUtil.uploadFile(userRequest.avatar().getName(),
+                    userRequest.avatar().getInputStream(),
+                    userRequest.avatar().getSize(),
+                    userRequest.avatar().getContentType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private EntityNotFoundException getUserNotFoundByIdException(long id) {
