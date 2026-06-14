@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.swoovo.support.util.MinioUtil;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 
 @Service
@@ -83,7 +84,7 @@ public class PostService {
         return postResponse;
     }
 
-    private void uploadMediaFiles(List<MultipartFile> mediaFiles) throws RuntimeException {
+    private void uploadMediaFiles(List<MultipartFile> mediaFiles) throws UncheckedIOException {
         try {
             for (MultipartFile media : mediaFiles) {
                 minioUtil.uploadFile(media.getName(),
@@ -92,7 +93,7 @@ public class PostService {
                         media.getContentType());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 

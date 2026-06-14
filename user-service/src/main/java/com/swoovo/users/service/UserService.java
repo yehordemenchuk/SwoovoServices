@@ -3,7 +3,6 @@ package com.swoovo.users.service;
 import com.swoovo.users.dto.UserRequest;
 import com.swoovo.users.dto.UserResponse;
 import com.swoovo.users.entity.UserEntity;
-import com.swoovo.users.exception.FileStorageException;
 import com.swoovo.users.mapper.UserMapper;
 import com.swoovo.users.repository.UserEntityRepository;
 import jakarta.persistence.EntityExistsException;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.swoovo.support.util.MinioUtil;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,8 @@ public class UserService {
             @CacheEvict(value = "users", allEntries = true),
             @CacheEvict(value = "user", allEntries = true)
     })
-    public UserResponse createUser(UserRequest userRequest) throws FileStorageException,
-            EntityExistsException {
+    public UserResponse createUser(UserRequest userRequest)
+            throws EntityExistsException {
         if (checkUserExists(userRequest)) {
             throw new EntityExistsException("User with this data already exists: " + userRequest);
         }
@@ -48,7 +48,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "user")
-    public UserResponse findUserById(long id) throws FileStorageException {
+    public UserResponse findUserById(long id) {
         return getUserResponse(findUserEntityById(id));
     }
 
@@ -63,7 +63,7 @@ public class UserService {
             @CacheEvict(value = "users", allEntries = true),
             @CacheEvict(value = "user", key = "#id")
     })
-    public UserResponse updateUser(long id, UserRequest userRequest) throws FileStorageException {
+    public UserResponse updateUser(long id, UserRequest userRequest) {
         UserEntity userEntity = findUserEntityById(id);
 
         userMapper.updateUserFromRequest(userRequest, userEntity);
@@ -92,7 +92,7 @@ public class UserService {
                 .findByPhoneNumber(userRequest.phoneNumber()).isPresent();
     }
 
-    private UserResponse getUserResponse(UserEntity userEntity) throws FileStorageException {
+    private UserResponse getUserResponse(UserEntity userEntity) {
         UserResponse userResponse = userMapper.toResponse(userEntity);
 
         userResponse.setAvatarUrl(minioUtil.downloadFile(userEntity.getAvatarFilePath()));
@@ -105,14 +105,14 @@ public class UserService {
                 .orElseThrow(() -> getUserNotFoundByIdException(id));
     }
 
-    private void uploadUserAvatar(UserRequest userRequest) throws RuntimeException {
+    private void uploadUserAvatar(UserRequest userRequest) throws UncheckedIOException {
         try {
             minioUtil.uploadFile(userRequest.avatar().getName(),
                     userRequest.avatar().getInputStream(),
                     userRequest.avatar().getSize(),
                     userRequest.avatar().getContentType());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 

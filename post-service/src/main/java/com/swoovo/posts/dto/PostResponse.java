@@ -1,15 +1,17 @@
 package com.swoovo.posts.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public final class PostResponse {
-    private final Long id;
-    private final String name;
-    private final String postText;
-    private final List<String> mediaFileNames;
-    private final Long userId;
+    private Long id;
+    private String name;
+    private String postText;
+    private List<String> mediaFileNames;
+    private Long userId;
     private List<String> mediaUrls;
 }
