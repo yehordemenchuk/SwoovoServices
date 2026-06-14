@@ -3,6 +3,7 @@ package com.swoovo.posts.controller;
 import com.swoovo.posts.dto.PostRequest;
 import com.swoovo.posts.dto.PostResponse;
 import com.swoovo.posts.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class PostController {
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<PostResponse> createPost(@ModelAttribute PostRequest postRequest) {
+    public ResponseEntity<PostResponse> createPost(@Valid @ModelAttribute PostRequest postRequest) {
         PostResponse postResponse = postService.createPost(postRequest);
 
         URI location = ServletUriComponentsBuilder

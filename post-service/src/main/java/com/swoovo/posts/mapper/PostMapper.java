@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
-    @Mapping(target = "mediaFileNames", expression = "java(mapMedia(postRequest, minioUtil))")
+    @Mapping(target = "mediaFileNames", expression = "java(mapMedia(postRequest))")
     Post fromRequest(PostRequest postRequest);
 
     PostResponse toResponse(Post post);
