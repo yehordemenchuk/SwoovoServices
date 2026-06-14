@@ -11,8 +11,8 @@ import java.math.BigInteger;
 public record UserRequest(@NotEmpty String name,
                           @NotEmpty String surname,
                           @NotEmpty @Email String email,
-                          @Positive Integer age,
-                          @Positive BigInteger phoneNumber,
+                          @NotNull @Positive Integer age,
+                          @NotNull @Positive BigInteger phoneNumber,
                           @NotEmpty String userRole,
                           @NotEmpty String deviceToken,
                           @NotNull MultipartFile avatar) {

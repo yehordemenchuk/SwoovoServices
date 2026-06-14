@@ -53,7 +53,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "users")
     public Page<UserResponse> findAllUsers(Pageable pageable) {
         return userEntityRepository.findAll(pageable).map(this::getUserResponse);
     }

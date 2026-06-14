@@ -1,23 +1,20 @@
 package com.swoovo.users.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigInteger;
 import java.util.List;
 
-@Getter
-@RequiredArgsConstructor
+@Data
 public final class UserResponse {
-    private final Long id;
-    private final String name;
-    private final String surname;
-    private final String email;
-    private final BigInteger phoneNumber;
-    private final String userRole;
-    private final Integer age;
-    private final List<String> deviceTokens;
+    private Long id;
+    private String name;
+    private String surname;
+    private String email;
+    private BigInteger phoneNumber;
+    private String userRole;
+    private Integer age;
+    private List<String> deviceTokens;
 
     @Setter
     private String avatarUrl;
