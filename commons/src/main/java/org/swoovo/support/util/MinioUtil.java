@@ -1,32 +1,27 @@
-package com.swoovo.users.service;
+package org.swoovo.support.util;
 
-import com.swoovo.users.exception.FileStorageException;
-import com.swoovo.users.service.helpers.MinioAction;
-import com.swoovo.users.service.helpers.MinioNonResultAction;
 import io.minio.*;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.swoovo.support.exception.FileStorageException;
+import org.swoovo.support.util.helpers.MinioAction;
+import org.swoovo.support.util.helpers.MinioNonResultAction;
 
 import java.io.InputStream;
 
-@Service
 @RequiredArgsConstructor
-public class MinioService {
-    @Value("${minio.bucket-name}")
-    private String bucketName;
+public class MinioUtil {
+    private final String bucketName;
 
-    @Value("${minio.expiration}")
-    private int minioExpiration;
+    private final int minioExpiration;
 
     private final MinioClient minioClient;
 
-    public Iterable<Result<Item>> listFiles(String bucketName) throws FileStorageException{
+    public Iterable<Result<Item>> listFiles(String bucketName) throws FileStorageException {
         return executeMinioAction(minioClient::listObjects,
                 ListObjectsArgs.builder()
-                .bucket(bucketName)
-                .build());
+                        .bucket(bucketName)
+                        .build());
     }
 
     public String downloadFile(String fileName) throws FileStorageException {

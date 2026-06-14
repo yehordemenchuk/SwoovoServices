@@ -3,10 +3,7 @@ package com.swoovo.users.mapper;
 import com.swoovo.users.dto.UserRequest;
 import com.swoovo.users.dto.UserResponse;
 import com.swoovo.users.entity.UserEntity;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.Objects;
 

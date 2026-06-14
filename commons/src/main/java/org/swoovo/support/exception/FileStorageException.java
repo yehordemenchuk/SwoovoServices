@@ -1,4 +1,4 @@
-package com.swoovo.users.exception;
+package org.swoovo.support.exception;
 
 public class FileStorageException extends RuntimeException {
     public FileStorageException(String message) {

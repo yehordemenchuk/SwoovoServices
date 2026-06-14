@@ -1,4 +1,4 @@
-package com.swoovo.users.config;
+package com.swoovo.posts.config;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

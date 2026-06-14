@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<UserResponse> registerUser(@Valid @ModelAttribute UserRequest userRequest) throws Exception {
+    public ResponseEntity<UserResponse> registerUser(@Valid @ModelAttribute UserRequest userRequest) {
         UserResponse userResponse = userService.createUser(userRequest);
 
         URI location = ServletUriComponentsBuilder

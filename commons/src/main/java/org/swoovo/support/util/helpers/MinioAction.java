@@ -1,4 +1,4 @@
-package com.swoovo.users.service.helpers;
+package org.swoovo.support.util.helpers;
 
 @FunctionalInterface
 public interface MinioAction<T, R> {

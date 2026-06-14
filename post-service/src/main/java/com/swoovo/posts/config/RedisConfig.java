@@ -1,4 +1,4 @@
-package com.swoovo.users.config;
+package com.swoovo.posts.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
