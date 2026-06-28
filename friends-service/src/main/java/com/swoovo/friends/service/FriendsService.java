@@ -1,8 +1,9 @@
 package com.swoovo.friends.service;
 
-import com.swoovo.friends.dto.FriendsRecordRequest;
-import com.swoovo.friends.dto.FriendsRecordResponse;
+import com.swoovo.friends.dto.request.FriendsRecordRequest;
+import com.swoovo.friends.dto.response.FriendsRecordResponse;
 import com.swoovo.friends.entities.FriendsRecordEntity;
+import com.swoovo.friends.entities.FriendshipDemandEntity;
 import com.swoovo.friends.mapper.FriendsRecordMapper;
 import com.swoovo.friends.repository.FriendsRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +24,8 @@ public class FriendsService {
     private final FriendsRecordMapper friendsRecordMapper;
 
     @Caching(evict = {
-            @CacheEvict(key = "#{friendRequest.firstUserId()}", value = "friends_ids"),
-            @CacheEvict(key = "#{friendRequest.secondUserId()}", value = "friends_ids")
+            @CacheEvict(key = "#friendRequest.firstUserId()", value = "friends_ids"),
+            @CacheEvict(key = "#friendRequest.secondUserId()", value = "friends_ids")
     })
     public FriendsRecordResponse createFriend(FriendsRecordRequest friendRequest) {
         FriendsRecordEntity friendRecord = friendsRecordRepository.save(friendsRecordMapper
@@ -58,5 +59,23 @@ public class FriendsService {
 
     public Page<FriendsRecordResponse> findAll(Pageable pageable) {
         return friendsRecordRepository.findAll(pageable).map(friendsRecordMapper::toResponse);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(key = "#friendshipDemandEntity.receiverId", value = "friends_ids"),
+            @CacheEvict(key = "#friendshipDemandEntity.senderId", value = "friends_ids")
+    })
+    void createFromDemand(FriendshipDemandEntity friendshipDemandEntity) {
+        boolean friendshipExists = friendsRecordRepository.findAll().stream()
+                .anyMatch(f ->
+                        (f.getFirstUserId().equals(friendshipDemandEntity.getSenderId())
+                                && f.getSecondUserId().equals(friendshipDemandEntity.getReceiverId())) ||
+                                (f.getFirstUserId().equals(friendshipDemandEntity.getReceiverId())
+                                        && f.getSecondUserId().equals(friendshipDemandEntity.getSenderId()))
+                );
+
+        if (!friendshipExists) {
+            friendsRecordRepository.save(friendsRecordMapper.fromDemand(friendshipDemandEntity));
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.swoovo.friends.dto;
+package com.swoovo.friends.dto.request;
 
 import jakarta.validation.constraints.Positive;
 

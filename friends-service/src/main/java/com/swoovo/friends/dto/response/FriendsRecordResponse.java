@@ -1,4 +1,4 @@
-package com.swoovo.friends.dto;
+package com.swoovo.friends.dto.response;
 
 public record FriendsRecordResponse(Long id,
                                     Long firstUserId,

@@ -1,7 +1,7 @@
 package com.swoovo.friends.controller;
 
-import com.swoovo.friends.dto.FriendsRecordRequest;
-import com.swoovo.friends.dto.FriendsRecordResponse;
+import com.swoovo.friends.dto.request.FriendsRecordRequest;
+import com.swoovo.friends.dto.response.FriendsRecordResponse;
 import com.swoovo.friends.service.FriendsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class FriendsController {
     }
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<FriendsRecordResponse>>> findFriends(Pageable pageable,
+    public ResponseEntity<PagedModel<EntityModel<FriendsRecordResponse>>> findFriendsRecords(Pageable pageable,
                                                                                      PagedResourcesAssembler<FriendsRecordResponse> assembler) {
         Page<FriendsRecordResponse> friends = friendService.findAll(pageable);
 
