@@ -65,7 +65,8 @@ public class FriendshipDemandService {
 
         friendshipDemandRepository.save(demand);
 
-        friendsService.createFromDemand(friendshipDemandRepository.save(demand));
+        if (newStatus.equals(RequestStatus.ACCEPTED))
+            friendsService.createFromDemand(friendshipDemandRepository.save(demand));
 
         return friendshipDemandMapper.toResponse(demand);
     }
