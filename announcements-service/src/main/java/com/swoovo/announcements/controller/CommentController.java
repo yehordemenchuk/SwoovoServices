@@ -3,6 +3,7 @@ package com.swoovo.announcements.controller;
 import com.swoovo.announcements.dto.request.CommentRequest;
 import com.swoovo.announcements.dto.response.CommentResponse;
 import com.swoovo.announcements.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentResponse> addComment(@RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<CommentResponse> addComment(@Valid @RequestBody CommentRequest commentRequest) {
         CommentResponse commentResponse = commentService.addComment(commentRequest);
 
         URI location = ServletUriComponentsBuilder

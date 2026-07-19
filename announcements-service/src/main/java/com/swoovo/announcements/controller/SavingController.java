@@ -3,6 +3,7 @@ package com.swoovo.announcements.controller;
 import com.swoovo.announcements.dto.request.toggling.SavingRequest;
 import com.swoovo.announcements.dto.response.SavingStatusResponse;
 import com.swoovo.announcements.service.toggling.SavingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class SavingController {
     private final SavingService savingService;
 
     @PostMapping
-    public ResponseEntity<SavingStatusResponse> toggleSavings(@RequestBody SavingRequest savingRequest) {
+    public ResponseEntity<SavingStatusResponse> toggleSavings(@Valid @RequestBody SavingRequest savingRequest) {
         return ResponseEntity.ok(savingService.toggleSaving(savingRequest));
     }
 

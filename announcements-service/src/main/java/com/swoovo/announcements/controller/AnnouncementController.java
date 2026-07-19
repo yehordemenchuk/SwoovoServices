@@ -3,6 +3,7 @@ package com.swoovo.announcements.controller;
 import com.swoovo.announcements.dto.request.AnnouncementRequest;
 import com.swoovo.announcements.dto.response.AnnouncementResponse;
 import com.swoovo.announcements.service.AnnouncementService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @PostMapping
-    public ResponseEntity<AnnouncementResponse> createAnnouncement(@RequestBody AnnouncementRequest announcementRequest) {
+    public ResponseEntity<AnnouncementResponse> createAnnouncement(@Valid @RequestBody AnnouncementRequest announcementRequest) {
         AnnouncementResponse announcementResponse = announcementService
                 .createAnnouncement(announcementRequest);
 

@@ -3,6 +3,7 @@ package com.swoovo.announcements.controller;
 import com.swoovo.announcements.dto.request.toggling.LikeRequest;
 import com.swoovo.announcements.dto.response.LikeStatusResponse;
 import com.swoovo.announcements.service.toggling.LikeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<LikeStatusResponse> toggleLikes(@RequestBody LikeRequest likeRequest) {
+    public ResponseEntity<LikeStatusResponse> toggleLikes(@Valid @RequestBody LikeRequest likeRequest) {
         return ResponseEntity.ok(likeService.toggleLike(likeRequest));
     }
 
