@@ -1,5 +1,7 @@
 package com.swoovo.announcements.entity;
 
+import com.swoovo.announcements.entity.toggling.Like;
+import com.swoovo.announcements.entity.toggling.Saving;
 import jakarta.persistence.*;
 import lombok.*;
 

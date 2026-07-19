@@ -1,8 +1,8 @@
 package com.swoovo.announcements.controller;
 
-import com.swoovo.announcements.dto.request.LikeRequest;
+import com.swoovo.announcements.dto.request.toggling.LikeRequest;
 import com.swoovo.announcements.dto.response.LikeStatusResponse;
-import com.swoovo.announcements.service.LikeService;
+import com.swoovo.announcements.service.toggling.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +14,8 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<LikeStatusResponse> toggleLike(@RequestBody LikeRequest likeRequest) {
-        return ResponseEntity.ok(likeService.addLike(likeRequest));
+    public ResponseEntity<LikeStatusResponse> toggleLikes(@RequestBody LikeRequest likeRequest) {
+        return ResponseEntity.ok(likeService.toggleLike(likeRequest));
     }
 
     @GetMapping
