@@ -3,10 +3,12 @@ package org.swoovo.support.util;
 import io.minio.*;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import org.swoovo.support.exception.FileStorageException;
 import org.swoovo.support.util.helpers.MinioAction;
 import org.swoovo.support.util.helpers.MinioNonResultAction;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @RequiredArgsConstructor
@@ -33,6 +35,17 @@ public class MinioUtil {
                         .object(fileName)
                         .build()
         );
+    }
+
+    public void uploadFile(MultipartFile file) throws FileStorageException {
+        try{
+            uploadFile(file.getName(),
+                    file.getInputStream(),
+                    file.getSize(),
+                    file.getContentType());
+        } catch(IOException e) {
+            throw new FileStorageException(e.getMessage());
+        }
     }
 
     public void uploadFile(String objectName, InputStream stream, long size, String contentType)

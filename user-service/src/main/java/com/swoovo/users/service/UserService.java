@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swoovo.support.util.MinioUtil;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -38,7 +35,7 @@ public class UserService {
             throw new EntityExistsException("User with this data already exists: " + userRequest);
         }
 
-        uploadUserAvatar(userRequest);
+        minioUtil.uploadFile(userRequest.avatar());
 
         UserEntity userEntity = userEntityRepository
                 .save(userMapper.fromRequest(userRequest));
@@ -102,17 +99,6 @@ public class UserService {
     private UserEntity findUserEntityById(long id) throws EntityNotFoundException {
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> getUserNotFoundByIdException(id));
-    }
-
-    private void uploadUserAvatar(UserRequest userRequest) throws UncheckedIOException {
-        try {
-            minioUtil.uploadFile(userRequest.avatar().getName(),
-                    userRequest.avatar().getInputStream(),
-                    userRequest.avatar().getSize(),
-                    userRequest.avatar().getContentType());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 
     private EntityNotFoundException getUserNotFoundByIdException(long id) {

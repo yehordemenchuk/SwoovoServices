@@ -7,15 +7,14 @@ import java.util.List;
 
 @Data
 public final class UserResponse {
-    private Long id;
-    private String name;
-    private String surname;
-    private String email;
-    private BigInteger phoneNumber;
-    private String userRole;
-    private Integer age;
-    private List<String> deviceTokens;
+    private final Long id;
+    private final String name;
+    private final String surname;
+    private final String email;
+    private final BigInteger phoneNumber;
+    private final String userRole;
+    private final Integer age;
+    private final List<String> deviceTokens;
 
-    @Setter
     private String avatarUrl;
 }
