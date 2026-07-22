@@ -4,6 +4,7 @@ import com.swoovo.users.dto.UserRequest;
 import com.swoovo.users.dto.UserResponse;
 import com.swoovo.users.entity.UserEntity;
 import org.mapstruct.*;
+import org.swoovo.support.util.MinioUtil;
 
 import java.util.Objects;
 
@@ -19,7 +20,7 @@ public interface UserMapper {
     void updateUserFromRequest(UserRequest userRequest, @MappingTarget UserEntity userEntity);
 
     default String mapAvatar(UserRequest userRequest) {
-        return userRequest.avatar().getOriginalFilename();
+        return MinioUtil.getFileName(userRequest.avatar());
     }
 
     @AfterMapping

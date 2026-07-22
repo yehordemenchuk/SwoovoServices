@@ -5,6 +5,7 @@ import com.swoovo.announcements.dto.response.AnnouncementResponse;
 import com.swoovo.announcements.entity.Announcement;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.swoovo.support.util.MinioUtil;
 
 @Mapper(componentModel = "spring")
 public interface AnnouncementMapper {
@@ -14,6 +15,6 @@ public interface AnnouncementMapper {
     AnnouncementResponse toResponse(Announcement announcement);
 
     default String mapImage(AnnouncementRequest announcementRequest) {
-        return announcementRequest.image().getOriginalFilename();
+        return MinioUtil.getFileName(announcementRequest.image());
     }
 }

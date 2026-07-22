@@ -19,6 +19,10 @@ public class MinioUtil {
 
     private final MinioClient minioClient;
 
+    public static String getFileName(MultipartFile file) {
+        return file.getOriginalFilename();
+    }
+
     public Iterable<Result<Item>> listFiles(String bucketName) throws FileStorageException {
         return executeMinioAction(minioClient::listObjects,
                 ListObjectsArgs.builder()

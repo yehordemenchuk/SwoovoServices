@@ -28,8 +28,6 @@ public class AnnouncementService {
             @CacheEvict(value = "announcement", allEntries = true)
     })
     public AnnouncementResponse createAnnouncement(AnnouncementRequest announcementRequest) {
-        System.out.println(announcementRequest.createdAt());
-
         Announcement announcement = announcementMapper.fromRequest(announcementRequest);
 
         minioUtil.uploadFile(announcementRequest.image());
