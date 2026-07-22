@@ -9,7 +9,6 @@ import com.swoovo.announcements.repository.toggling.TogglingEntityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
