@@ -1,4 +1,4 @@
-package com.swoovo.announcements.dto.config;
+package com.swoovo.announcements.config;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

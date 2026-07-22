@@ -17,6 +17,7 @@
         <module>announcements-service</module>
         <module>notification-service</module>
         <module>friends-service</module>
+        <module>complaints-service</module>
         <module>commons</module>
     </modules>
 </project>
