@@ -8,14 +8,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 public final class AnnouncementResponse {
-    private final Long id;
-    private final String title;
-    private final String content;
+    private Long id;
+    private String title;
+    private String content;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-    private final LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt;
 
-    private final String creatorId;
+    private Long userId;
 
     private String imageUrl;
 }

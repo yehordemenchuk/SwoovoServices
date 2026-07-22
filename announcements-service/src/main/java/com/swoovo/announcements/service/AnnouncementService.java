@@ -25,17 +25,18 @@ public class AnnouncementService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "announcement", allEntries = true),
-            @CacheEvict(value = "announcements", allEntries = true),
+            @CacheEvict(value = "announcement", allEntries = true)
     })
     public AnnouncementResponse createAnnouncement(AnnouncementRequest announcementRequest) {
+        System.out.println(announcementRequest.createdAt());
+
         Announcement announcement = announcementMapper.fromRequest(announcementRequest);
 
         minioUtil.uploadFile(announcementRequest.image());
 
         announcementRepository.save(announcement);
 
-        return announcementMapper.toResponse(announcement);
+        return getAnnouncementResponse(announcement);
     }
 
     @Transactional(readOnly = true)
@@ -44,20 +45,18 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return announcementMapper.toResponse(announcement);
+        return getAnnouncementResponse(announcement);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "announcements")
     public Page<AnnouncementResponse> findAllAnnouncements(Pageable pageable) {
         return announcementRepository.findAll(pageable)
-                .map(announcementMapper::toResponse);
+                .map(this::getAnnouncementResponse);
     }
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "announcement", allEntries = true),
-            @CacheEvict(value = "announcements", allEntries = true),
+            @CacheEvict(value = "announcement", allEntries = true)
     })
     public void deleteById(long id) throws EntityNotFoundException {
         if (!announcementRepository.existsById(id)) {
@@ -65,5 +64,13 @@ public class AnnouncementService {
         }
 
         announcementRepository.deleteById(id);
+    }
+
+    private AnnouncementResponse getAnnouncementResponse(Announcement announcement) {
+        AnnouncementResponse announcementResponse = announcementMapper.toResponse(announcement);
+
+        announcementResponse.setImageUrl(minioUtil.downloadFile(announcement.getImageFilePath()));
+
+        return announcementResponse;
     }
 }

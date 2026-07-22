@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/likes/")
+@RequestMapping("/api/v1/likes")
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
@@ -21,9 +21,9 @@ public class LikeController {
 
     @GetMapping
     public ResponseEntity<LikeStatusResponse> getLikeStatus(
-            @RequestParam long id,
+            @RequestParam long announcementId,
             @RequestParam long userId) {
-        return ResponseEntity.ok(likeService.getLikeStatus(id, userId));
+        return ResponseEntity.ok(likeService.getLikeStatus(announcementId, userId));
     }
 }
 

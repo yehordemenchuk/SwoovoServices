@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Entity
+@Table(name = "likes")
 @NoArgsConstructor
 @Data
 public class Like implements TogglingEntity {

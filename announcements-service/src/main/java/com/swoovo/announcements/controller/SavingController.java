@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/savings/")
+@RequestMapping("/api/v1/savings")
 @RequiredArgsConstructor
 public class SavingController {
     private final SavingService savingService;
@@ -21,8 +21,8 @@ public class SavingController {
 
     @GetMapping
     public ResponseEntity<SavingStatusResponse> getSaveStatus(
-            @RequestParam long id,
+            @RequestParam long announcementId,
             @RequestParam long userId) {
-        return ResponseEntity.ok(savingService.getSavingStatus(id, userId));
+        return ResponseEntity.ok(savingService.getSavingStatus(announcementId, userId));
     }
 }

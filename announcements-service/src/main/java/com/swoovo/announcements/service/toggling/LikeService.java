@@ -33,12 +33,11 @@ public class LikeService extends TogglingEntityService<Like, LikeRequest, LikeSt
 
         return addEntity(likeRequest, () -> formLikeStatus(true, announcement.getId()),
                 () -> formLikeStatus(false, announcement.getId()),
-                announcement.getLikes(),
                 announcement);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "like_status", key = "#announcementId")
+    @Cacheable(value = "like_status", key = "#userId")
     public LikeStatusResponse getLikeStatus(long announcementId, long userId) {
         return formLikeStatus(likeRepository
                         .existsByAnnouncementIdAndUserId(announcementId, userId),

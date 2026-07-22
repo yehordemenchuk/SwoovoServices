@@ -34,12 +34,12 @@ public class SavingService extends TogglingEntityService<Saving, SavingRequest, 
         Announcement announcement = findAnnouncement(savingRequest);
 
         return addEntity(savingRequest, () -> new SavingStatusResponse(true),
-                () -> new SavingStatusResponse(false), announcement.getSavings(),
+                () -> new SavingStatusResponse(false),
                 announcement);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "saving_status", key = "#announcementId")
+    @Cacheable(value = "saving_status", key = "#userId")
     public SavingStatusResponse getSavingStatus(long announcementId, long userId) {
         return new SavingStatusResponse(savingRepository
                 .existsByAnnouncementIdAndUserId(announcementId, userId));

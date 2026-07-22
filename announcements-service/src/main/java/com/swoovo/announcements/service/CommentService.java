@@ -25,14 +25,12 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(value="comments", allEntries = true)
-    })
     public CommentResponse addComment(CommentRequest request) throws EntityNotFoundException {
         Announcement announcement = announcementRepository.findById(request.announcementId())
                 .orElseThrow(EntityNotFoundException::new);
-
         Comment comment = commentMapper.fromRequest(request);
+
+        System.out.println(comment.getCreatedAt());
 
         comment.setAnnouncement(announcement);
 
@@ -46,7 +44,6 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "comments", key = "#announcementId")
     public List<CommentResponse> findAllComments(long announcementId) {
         return commentRepository.findByAnnouncementIdOrderByCreatedAtAsc(announcementId)
                 .stream()

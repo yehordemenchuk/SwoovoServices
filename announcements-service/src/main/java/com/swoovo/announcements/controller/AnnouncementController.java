@@ -7,6 +7,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,8 +23,10 @@ import java.net.URI;
 public class AnnouncementController {
     private final AnnouncementService announcementService;
 
-    @PostMapping
-    public ResponseEntity<AnnouncementResponse> createAnnouncement(@Valid @RequestBody AnnouncementRequest announcementRequest) {
+    @PostMapping(
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<AnnouncementResponse> createAnnouncement(@Valid @ModelAttribute AnnouncementRequest announcementRequest) {
         AnnouncementResponse announcementResponse = announcementService
                 .createAnnouncement(announcementRequest);
 
@@ -40,10 +46,11 @@ public class AnnouncementController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AnnouncementResponse>> getAllAnnouncements(Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<AnnouncementResponse>>> getAllAnnouncements(Pageable pageable,
+                                                                                             PagedResourcesAssembler<AnnouncementResponse> assembler) {
         Page<AnnouncementResponse> page = announcementService.findAllAnnouncements(pageable);
 
-        return ResponseEntity.ok(page);
+        return ResponseEntity.ok(assembler.toModel(page));
     }
 
     @DeleteMapping("/delete/{id}")

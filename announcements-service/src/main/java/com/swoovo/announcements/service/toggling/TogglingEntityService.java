@@ -8,7 +8,6 @@ import com.swoovo.announcements.repository.AnnouncementRepository;
 import com.swoovo.announcements.repository.toggling.TogglingEntityRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,21 +19,15 @@ public abstract class TogglingEntityService<T extends TogglingEntity, U extends 
     private final TogglingEntityMapper<T, U> togglingEntityMapper;
     private final AnnouncementRepository announcementRepository;
 
-    @Transactional
     protected R addEntity(U request, Supplier<R> positive,
                           Supplier<R> negative,
-                          List<T> entities,
                           Announcement announcement) throws EntityNotFoundException {
         if (deleteIfSavingExisting(request))
             return negative.get();
 
         T entity = togglingEntityMapper.fromRequest(request);
 
-        entities.add(entity);
-
         entity.setAnnouncement(announcement);
-
-        announcementRepository.save(announcement);
 
         togglingEntityRepository.save(entity);
 
