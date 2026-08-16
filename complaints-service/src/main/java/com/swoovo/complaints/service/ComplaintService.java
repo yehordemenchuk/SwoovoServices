@@ -11,9 +11,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.swoovo.support.util.MinioUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,10 @@ public class ComplaintService {
     public ComplaintResponse createComplaint(ComplaintRequest complaintRequest) {
         Complaint complaint = complaintMapper.fromRequest(complaintRequest);
 
-        minioUtil.uploadFile(complaintRequest.image());
+        List<MultipartFile> images = complaintRequest.images();
+
+        if (Objects.nonNull(images))
+            images.forEach(minioUtil::uploadFile);
 
         complaintRepository.save(complaint);
 
@@ -68,7 +73,12 @@ public class ComplaintService {
     private ComplaintResponse getComplaintResponse(Complaint complaint) {
         ComplaintResponse complaintResponse = complaintMapper.toResponse(complaint);
 
-        complaintResponse.setImageUrl(minioUtil.downloadFile(complaint.getImageFilePath()));
+        List<String> imagesPaths = complaint.getImagesFilePaths();
+
+        if (Objects.nonNull(imagesPaths))
+                imagesPaths
+                    .forEach(path -> complaintResponse
+                            .getImagesUrls().add(minioUtil.downloadFile(path)));
 
         return complaintResponse;
     }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public final class ComplaintResponse {
@@ -14,5 +16,5 @@ public final class ComplaintResponse {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
-    private String imageUrl;
+    private List<String> imagesUrls = new ArrayList<>();
 }

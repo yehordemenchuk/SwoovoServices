@@ -7,14 +7,22 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.swoovo.support.util.MinioUtil;
 
+import java.util.List;
+import java.util.Objects;
+
 @Mapper(componentModel = "spring")
 public interface ComplaintMapper {
-    @Mapping(target = "imageFilePath", expression = "java(mapImage(complaintRequest))")
+    @Mapping(target = "imagesFilePaths", expression = "java(mapImages(complaintRequest))")
     Complaint fromRequest(ComplaintRequest complaintRequest);
 
     ComplaintResponse toResponse(Complaint complaint);
 
-    default String mapImage(ComplaintRequest complaintRequest) {
-        return MinioUtil.getFileName(complaintRequest.image());
+    default List<String> mapImages(ComplaintRequest complaintRequest) {
+        if (Objects.isNull(complaintRequest.images()))
+            return null;
+
+        return complaintRequest.images().stream()
+                .map(MinioUtil::getFileName)
+                .toList();
     }
 }

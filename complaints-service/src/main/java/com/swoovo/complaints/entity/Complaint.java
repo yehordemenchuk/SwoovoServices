@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -27,5 +28,6 @@ public class Complaint {
     private LocalDateTime createdAt;
 
     @Nullable
-    private String imageFilePath;
+    @ElementCollection
+    private List<String> imagesFilePaths;
 }

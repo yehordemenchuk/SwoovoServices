@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RequiredArgsConstructor
-public class MinioUtil {
+public final class MinioUtil {
     private final String bucketName;
 
     private final int minioExpiration;
